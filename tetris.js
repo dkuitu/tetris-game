@@ -4,8 +4,8 @@ const scoreElement = document.getElementById("score");
 
 const ROW = 15;
 const COL = COLUMN = 9;
-const SQl = squareSizel = 30;
-const SQh = squareSizeh = 30;
+const SQl = squareSizel = 40;
+const SQh = squareSizeh = 40;
 const VACANT = "WHITE"; // color of an empty square
 
 // draw a square
@@ -41,31 +41,29 @@ drawBoard();
 // the pieces and their colors
 
 const P1PIECES = [
-    [one,"#ffbab5"],
-    [two,"#ffbab5"],
-    [three,"#ffbab5"],
-    [four,"#ffbab5"],
-    [one,"#6399ff"]
+    [one,"#ffbab5",1],
+    [two,"#ffbab5",1],
+    [three,"#ffbab5",1],
+    [four,"#ffbab5",1]
 ];
 
 const P2PIECES = [
-    [one,"#abc8ff"],
-    [two,"#abc8ff"],
-    [three,"#abc8ff"],
-    [four,"#abc8ff"],
-    [one,"#ff7a70"]
+    [one,"#abc8ff",2],
+    [two,"#abc8ff",2],
+    [three,"#abc8ff",2],
+    [four,"#abc8ff",2]
 ];
 
 // generate random pieces
 
 function randomP1Piece(){
     let r = randomN = Math.floor(Math.random() * P1PIECES.length) // 0 -> 6
-    return new Piece( P1PIECES[r][0],P1PIECES[r][1]);
+    return new Piece( P1PIECES[r][0],P1PIECES[r][1],1);
 }
 
 function randomP2Piece() {
     let r = randomN = Math.floor(Math.random() * P2PIECES.length) // 0 -> 6
-    return new Piece( P2PIECES[r][0],P2PIECES[r][1]);  
+    return new Piece( P2PIECES[r][0],P2PIECES[r][1],2);  
 }
 
 let p1 = randomP1Piece();
@@ -73,17 +71,23 @@ let p2 = randomP2Piece();
 
 // The Object Piece
 
-function Piece(tetromino,color){
+function Piece(tetromino,color,player){
     this.tetromino = tetromino;
     this.color = color;
-    //this.player = player;
+    this.player = player;
     
     this.tetrominoN = 0; // we start from the first pattern
     this.activeTetromino = this.tetromino[this.tetrominoN];
     
-    // we need to control the pieces
-    this.x = 3;
-    this.y = -2;
+    // where the pieces spawn
+    if(this.player == 1) {
+        this.x = 2;
+        this.y = -2;        
+    } else {
+        this.x = 6;
+        this.y = -2;
+    }
+
 }
 
 // fill function
@@ -181,6 +185,7 @@ Piece.prototype.lock = function(){
             }
             // pieces to lock on top = game over
             if(this.y + r < 0){
+                //TODO remove all locked peices of this type
                 alert("Game Over");
                 // stop request animation frame
                 gameOver = true;
@@ -236,14 +241,15 @@ Piece.prototype.collision = function(x,y,piece){
             if(newX < 0 || newX >= COL || newY >= ROW){
                 return true;
             }
-            // skip newY < 0; board[-1] will crush our game
+            // skip newY < 0; board[-1] will crash our game
             if(newY < 0){
                 continue;
             }
-            // check if there is a locked piece alrady in place
+            // check if there is a locked piece already in place
             if( board[newY][newX] != VACANT){
                 return true;
             }
+
         }
     }
     return false;
