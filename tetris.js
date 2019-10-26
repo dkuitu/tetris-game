@@ -40,29 +40,36 @@ drawBoard();
 
 // the pieces and their colors
 
-const PIECES = [
+const P1PIECES = [
     [one,"#ffbab5"],
     [two,"#ffbab5"],
     [three,"#ffbab5"],
     [four,"#ffbab5"],
+    [one,"#6399ff"]
+];
+
+const P2PIECES = [
     [one,"#abc8ff"],
     [two,"#abc8ff"],
     [three,"#abc8ff"],
     [four,"#abc8ff"],
-    [one,"#ff7a70"],
-    [one,"#ff1200"],
-    [one,"#6399ff"],
-    [one,"#6399ff"]
+    [one,"#ff7a70"]
 ];
 
 // generate random pieces
 
-function randomPiece(){
-    let r = randomN = Math.floor(Math.random() * PIECES.length) // 0 -> 6
-    return new Piece( PIECES[r][0],PIECES[r][1]);
+function randomP1Piece(){
+    let r = randomN = Math.floor(Math.random() * P1PIECES.length) // 0 -> 6
+    return new Piece( P1PIECES[r][0],P1PIECES[r][1]);
 }
 
-let p = randomPiece();
+function randomP2Piece() {
+    let r = randomN = Math.floor(Math.random() * P2PIECES.length) // 0 -> 6
+    return new Piece( P2PIECES[r][0],P2PIECES[r][1]);  
+}
+
+let p1 = randomP1Piece();
+let p2 = randomP2Piece();
 
 // The Object Piece
 
@@ -115,7 +122,8 @@ Piece.prototype.moveDown = function(){
     }else{
         // we lock the piece and generate a new one
         this.lock();
-        p = randomPiece();
+        p1 = randomP1Piece();
+        p2 = randomP2Piece();
     }
     
 }
@@ -247,16 +255,26 @@ document.addEventListener("keydown",CONTROL);
 
 function CONTROL(event){
     if(event.keyCode == 37){
-        p.moveLeft();
+        p1.moveLeft();
         dropStart = Date.now();
     }else if(event.keyCode == 38){
-        p.rotate();
+        p1.rotate();
         dropStart = Date.now();
     }else if(event.keyCode == 39){
-        p.moveRight();
+        p1.moveRight();
         dropStart = Date.now();
     }else if(event.keyCode == 40){
-        p.moveDown();
+        p1.moveDown();
+    }else if(event.keyCode == 65){
+        p2.moveLeft();
+        dropStart = Date.now();
+    }else if(event.keyCode == 87){
+        p2.rotate();
+        dropStart = Date.now();
+    }else if(event.keyCode == 68){
+        p2.moveRight();
+    }else if(event.keyCode == 83){
+        p2.moveDown();
     }
 }
 
@@ -268,7 +286,8 @@ function drop(){
     let now = Date.now();
     let delta = now - dropStart;
     if(delta > 500){
-        p.moveDown();
+        p1.moveDown();
+        p2.moveDown();
         dropStart = Date.now();
     }
     if( !gameOver){
